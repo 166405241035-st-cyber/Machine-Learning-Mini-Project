@@ -73,7 +73,7 @@ py -3.12 -m venv .venv
 - ผู้ใช้ยืนยันว่าทำ setup ครบทั้ง 6 ขั้นแล้ว: Python, extensions, clone, .venv, แพ็กเกจ และบัญชี/API key OpenAQ
 - สถานะสำเร็จอ้างอิงคำยืนยันของผู้ใช้ ยังไม่ได้ตรวจเวอร์ชันจริงหรือทดสอบ import โดยผู้ช่วย
 - ปัญหา Python เรียกไม่ได้ที่บันทึกก่อนหน้านี้เป็นประวัติก่อนผู้ใช้แจ้ง setup สำเร็จ
-- ยังไม่ยืนยันว่า .gitignore ป้องกัน .env และ .venv/ แล้ว ต้องตรวจก่อน commit โค้ด
+- เพิ่ม .gitignore บน GitHub เพื่อกัน .venv/, .env และไฟล์ cache แล้ว ผู้ใช้ต้อง git pull เพื่อรับลงเครื่อง
 - ไม่ขอให้ผู้ใช้ส่ง API key ในแชตหรือ commit ขึ้น GitHub
 
 ## จุดที่ต้องทำต่อทันที
@@ -95,3 +95,10 @@ py -3.12 -m venv .venv
 - Repository: https://github.com/166405241035-st-cyber/Machine-Learning-Mini-Project
 - OpenAQ API key: https://docs.openaq.org/using-the-api/quick-start
 - NASA POWER Daily API: https://power.larc.nasa.gov/docs/services/api/temporal/daily/
+
+## ผลตรวจ setup ที่ยืนยันจาก Terminal
+- ผู้ใช้ส่งผลทดสอบ import flask, pandas, sklearn, joblib, matplotlib, requests, dotenv ผ่าน Python ของ .venv: Setup OK
+- git pull สำเร็จ และ git status แสดง main ตรงกับ origin/main ณ commit 807c4bd
+- .venv/ ปรากฏเป็น untracked จึงยังไม่ได้ถูกติดตามใน working tree ตามผลที่ส่งมา
+- เพิ่ม .gitignore บน GitHub แล้ว ขั้นต่อไปให้ git pull และ git status อีกครั้ง .venv/ ควรไม่ปรากฏใน untracked
+- ยังไม่ได้บันทึกรุ่นแพ็กเกจจริงลง requirements.txt
