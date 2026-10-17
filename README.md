@@ -32,7 +32,19 @@ Copy-Item .env.example .env
 
 API key และ .venv ไม่ถูก commit ห้ามนำ key ไปวางในโค้ด โมเดลและ dataset สร้างในเครื่องจากสคริปต์ ไม่ต้องดาวน์โหลดไฟล์ joblib จากบุคคลอื่น
 
-## ข้อมูลและการทดลอง
+## หน้าวิเคราะห์ข้อมูล
+
+เปิด http://127.0.0.1:5000/analysis หรือเลือกเมนู วิเคราะห์ข้อมูล มีกราฟ 6 ชุดพร้อมคำอธิบาย สมการ สัมประสิทธิ์ ผลทดสอบ และข้อจำกัด กดภาพเพื่อเปิดขนาดเต็มได้
+
+หากเพิ่งฝึกโมเดลใหม่ ให้สร้างผลวิเคราะห์ใหม่ให้ตรงกันก่อนเปิดหน้า:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\analyze_results.py
+```
+
+รายงานอ่านแยกได้ที่ [การวิเคราะห์ภาษาไทย](docs/analysis/ANALYSIS_TH.md)
+
+## ข้อมูลและผลการทดลอง
 
 - OpenAQ location 5545, sensor 1304222: PM2.5 หน่วย µg/m³
 - NASA POWER: พิกัด 13.729852, 100.536501; T2M (°C), RH2M (%), WS10M (m/s ที่ 10 เมตร)
@@ -74,3 +86,4 @@ API key และ .venv ไม่ถูก commit ห้ามนำ key ไป�
 - [NASA POWER Hourly API](https://power.larc.nasa.gov/docs/services/api/temporal/hourly/)
 - [Scikit-learn LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
 - [Flask](https://flask.palletsprojects.com/)
+

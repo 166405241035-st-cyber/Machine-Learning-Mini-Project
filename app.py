@@ -1,5 +1,6 @@
 """AirPredict local Flask application. Run train_model.py before starting."""
 import math
+import json
 from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
@@ -9,6 +10,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 8192
+ANALYSIS_FIGURES = {
+    '01_weather_relationships', '02_correlations', '03_coefficient_effects',
+    '04_prediction_residuals', '05_test_performance', '06_monthly_completeness',
+}
 
 
 def load_bundle():
@@ -20,6 +25,24 @@ def load_bundle():
 def index():
     bundle = load_bundle()
     return render_template('index.html', report=bundle['report'] if bundle else None)
+
+
+@app.get('/analysis')
+def analysis():
+    stats_path = ROOT / 'docs/analysis/analysis_statistics.json'
+    metrics_path = ROOT / 'reports/metrics.json'
+    stats = json.loads(stats_path.read_text(encoding='utf-8')) if stats_path.exists() else None
+    report = json.loads(metrics_path.read_text(encoding='utf-8')) if metrics_path.exists() else None
+    ready = bool(stats and report and all(
+        (ROOT / 'docs/analysis/figures' / f'{name}.svg').exists() for name in ANALYSIS_FIGURES))
+    return render_template('analysis.html', stats=stats, report=report, ready=ready)
+
+
+@app.get('/analysis/figures/<name>.svg')
+def analysis_figure(name):
+    if name not in ANALYSIS_FIGURES:
+        return jsonify(error='ไม่พบกราฟนี้'), 404
+    return send_from_directory(ROOT / 'docs/analysis/figures', f'{name}.svg')
 
 
 @app.post('/api/predict')
@@ -60,3 +83,4 @@ def evaluation():
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=False)
+

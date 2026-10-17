@@ -2,7 +2,7 @@
 from unittest import TestCase, main
 from unittest.mock import patch
 
-from app import app
+from app import app, ANALYSIS_FIGURES
 
 
 class PredictionTests(TestCase):
@@ -39,6 +39,29 @@ class PredictionTests(TestCase):
         for url in ('/', '/static/style.css', '/static/app.js', '/evaluation.png'):
             self.assertEqual(self.client.get(url).status_code, 200)
 
+    def test_analysis_page_and_figures(self):
+        response = self.client.get('/analysis')
+        self.assertEqual(response.status_code, 200)
+        html = response.get_data(as_text=True)
+        self.assertIn('70 จาก 98', html)
+        self.assertIn('-0.674', html)
+        for name in ANALYSIS_FIGURES:
+            url = f'/analysis/figures/{name}.svg'
+            self.assertIn(url, html)
+            image = self.client.get(url)
+            self.assertEqual(image.status_code, 200)
+            self.assertIn('image/svg+xml', image.content_type)
+
+    def test_unknown_analysis_figure(self):
+        self.assertEqual(self.client.get('/analysis/figures/secrets.svg').status_code, 404)
+
+    def test_missing_analysis_files(self):
+        with patch('app.Path.exists', return_value=False):
+            response = self.client.get('/analysis')
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('ยังไม่ได้สร้างผลวิเคราะห์ครบ', response.get_data(as_text=True))
+
 
 if __name__ == '__main__':
     main()
+

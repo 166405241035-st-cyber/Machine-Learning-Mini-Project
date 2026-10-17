@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="th">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AirPredict · ประมาณฝุ่นจากสภาพอากาศ</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><script defer src="{{ url_for('static', filename='app.js') }}"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AirPredict · ประมาณฝุ่นจากสภาพอากาศ</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><script defer src="{{ url_for('static', filename='app.js') }}"></script><link rel="stylesheet" href="{{ url_for('static', filename='analysis.css') }}"></head>
 <body>
-<header><a class="brand" href="/">◌ AirPredict</a><span class="badge">Machine Learning Mini Project</span></header>
+<header><a class="brand" href="/">◌ AirPredict</a><nav class="main-nav" aria-label="เมนูหลัก"><a href="/" aria-current="page">ทดลองทำนาย</a><a href="/analysis">วิเคราะห์ข้อมูล ↗</a></nav></header>
 <main>
 <section class="intro"><p class="eyebrow">WEATHER → AIR QUALITY</p><h1>เข้าใจอากาศ<br>ผ่านข้อมูลและการเรียนรู้</h1><p class="lead">ทดลองประมาณปริมาณฝุ่น PM2.5 จากสภาพอากาศเฉลี่ยรายวัน<br class="desktop"> ด้วยโมเดล Linear Regression ของพื้นที่โรงพยาบาลจุฬาลงกรณ์ กรุงเทพฯ</p></section>
 <div class="workspace">
@@ -24,3 +24,4 @@
 {% else %}<p class="warning">ยังไม่มีโมเดล กรุณารัน scripts/train_model.py ก่อนเริ่มทดลอง</p>{% endif %}
 <footer><span>AirPredict / โครงงาน Machine Learning</span><span>OpenAQ + NASA POWER · Flask + Scikit-learn</span></footer>
 </main></body></html>
+
