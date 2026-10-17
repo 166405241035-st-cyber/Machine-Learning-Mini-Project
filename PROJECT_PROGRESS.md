@@ -123,3 +123,11 @@ py -3.12 -m venv .venv
 - ตัวเลือกตรวจต่อ: Chulalongkorn Hospital location 5545, sensor 1304222, พิกัด 13.729852,100.536501 หน่วย µg/m³
 - CSV ระบุช่วงสถานี 2016-08-18 ถึง 2026-10-17 แต่เป็น metadata ระดับ location ยังไม่ยืนยันความครบของ sensor หรือข้อมูลรายวัน
 - ยังไม่เลือกสถานีถาวร ต้องตรวจ coverage จริงก่อน เสนอพิจารณาช่วงปีเต็ม 2024–2025 ถ้าข้อมูลเพียงพอ
+
+## ผลตรวจรายวันจริง สถานีจุฬาลงกรณ์
+- เพิ่ม scripts/check_coverage.py และรัน API จริงแล้ว เก็บ raw JSON, CSV, coverage_report.json ใน data/coverage/ เฉพาะเครื่อง ยังไม่อัปโหลดข้อมูลดิบ
+- sensor 1304222: 2024 คืน 366 วัน ผ่านเกณฑ์ 275/366 (75.14%); 2025 คืน 259 วัน ผ่านเกณฑ์ 215/365 (58.90%)
+- เกณฑ์เบื้องต้น: ค่า finite ไม่ติดลบ หน่วย µg/m³ coverage >=75% และ hasFlags=false ไม่เติมค่าฝุ่นวันที่ขาด
+- ยังไม่เลือกสถานีถาวร เนื่องจากปี 2025 ขาดข้อมูลมาก ควรตรวจสถานีอื่น เช่น Thai Meteorological Department sensor 1304072 ก่อน
+- ต้องพิจารณา missingness รายเดือนและกรอบวัน OpenAQ ก่อนรวม NASA POWER
+- .venv launcher เปิดโปรเซสจาก tool ไม่ได้ จึงใช้ Python runtime ของ Codex กับ pure-Python packages requests/dotenv ใน .venv รันตรวจสำเร็จ ไม่ได้แก้ .venv ของผู้ใช้
