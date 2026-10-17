@@ -110,3 +110,9 @@ py -3.12 -m venv .venv
 - ผลเขียน data/station_candidates.csv มี station/sensor IDs พิกัด และช่วงวันที่ระดับสถานี ซึ่งยังไม่รับรองความครบของ PM2.5 ระดับ sensor
 - ยังไม่ได้รัน API จริง เนื่องจาก key อยู่ในเครื่องผู้ใช้
 - ขั้นต่อไป: git pull, ตั้ง .env เฉพาะเครื่อง, รันสคริปต์ และตรวจรายชื่อสถานี
+
+## ผลรันค้นหาสถานีจากผู้ใช้
+- รัน scripts/find_stations.py สำเร็จ พบ 267 PM2.5 sensors และสร้าง data/station_candidates.csv ในเครื่องผู้ใช้
+- จำนวน 267 เป็นจำนวน sensor ไม่ใช่จำนวนสถานีไม่ซ้ำ บางสถานีมีหลาย sensor
+- ผู้ใช้เคยพิมพ์ OPENAQ_API_KEY=your_key_here ลง PowerShell จึงเกิด CommandNotFoundException บรรทัดนี้ต้องอยู่ใน .env แต่การรันสคริปต์ภายหลังสำเร็จ แสดงว่ามี key ใช้งานได้ใน environment หรือ .env โดยไม่ต้องเปิดเผยค่า
+- ยังไม่ได้เลือกสถานีหรือยืนยันช่วงข้อมูล ต้องอ่าน CSV และตรวจ sensor-level coverage ต่อ
