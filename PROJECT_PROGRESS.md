@@ -144,3 +144,17 @@ py -3.12 -m venv .venv
 - ยังไม่ฝึกโมเดล ขั้นถัดไป Linear Regression 1 โมเดล แบ่งตามเวลา ประเมินเทียบค่าเฉลี่ยจากชุดฝึกด้วย MAE/RMSE/R²
 - ฝั่ง tool ไม่สามารถเขียน .git/FETCH_HEAD ได้ จึงอัปเดต GitHub ผ่าน connector; สคริปต์ใน working tree ยัง untracked ต้องจัด sync อย่างระมัดระวัง (ไม่ลบไฟล์ของผู้ใช้)
 - ข้อมูลดิบและ CSV ยังอยู่เฉพาะเครื่อง ไม่ได้เผยแพร่ dataset บน GitHub ต้องตรวจ attribution/licensing ก่อน
+
+## เว็บ AirPredict รุ่นทดลองพร้อมใช้งาน
+- เพิ่ม app.py, templates/index.html, static/style.css, static/app.js และ scripts/train_model.py พร้อม README และ tests/test_app.py
+- ฝึก LinearRegression 1 โมเดลจาก 392 วันแรก และทดสอบ 98 วันท้าย (2025-06-13 ถึง 2025-12-31) ไม่สุ่มและไม่ใช้ชุดทดสอบฝึก
+- MAE 5.1445, RMSE 6.1951 µg/m³, R² 0.52936; baseline ค่าเฉลี่ยจากชุดฝึก MAE 8.8792
+- โมเดลบันทึก models/linear_regression.joblib; reports/metrics.json, test_predictions.csv, evaluation.png สร้างจริงในเครื่อง
+- เว็บภาษาไทยรองรับหน้าจอแคบ มีแบบฟอร์ม 3 ตัวแปร ผลประมาณ กราฟและตัวเลขประเมิน พร้อมข้อจำกัดข้อมูล
+- API ตรวจค่าผิดรูปแบบ, boolean, NaN/Infinity, ขอบเขต, missing model และเตือนค่านอกชุดฝึก ค่าทำนายติดลบแสดงเป็นไม่สามารถประมาณทางกายภาพ ไม่ clamp เงียบ
+- unittest ผ่าน 6 กรณี ทดสอบ assets และหน้าเว็บ 200; ทดสอบ browser จริงกดทำนาย 30°C,70%,2m/s ได้ 32.30 µg/m³
+- เปิด local Flask server http://127.0.0.1:5000 ผ่าน bundled Python 3.12.14 โดยใช้แพ็กเกจใน .venv; Python ของผู้ใช้เคยรันได้เอง แต่ tool ยังเรียก executable ของผู้ใช้ไม่ได้
+- ผู้ใช้รันปกติด้วย .\.venv\Scripts\python.exe app.py; ถ้าพอร์ตถูกใช้อยู่ ใช้ server ที่เปิดไว้ก่อน
+- .gitignore กัน data/, models/, reports/, .mplconfig/; ไม่เผยแพร่ API key หรือ raw data
+- โค้ด GitHub อัปเดตผ่าน connector เพราะเครื่องมือยังเขียน .git/FETCH_HEAD ไม่ได้; working tree มีไฟล์เดียวกับที่สร้างไว้ แต่ metadata Git ในเครื่องอาจยังตามหลัง ก่อน pull ต้องตรวจ untracked files เพื่อไม่ชนไฟล์
+- ยังไม่ได้ deploy ออนไลน์ สถานะคือเว็บทดลองบนเครื่องและผลประเมินย้อนหลัง งานถัดไปให้ผู้ใช้ทดลอง UI และตรวจความเหมาะสมสำหรับรายงาน

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="th">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AirPredict · ประมาณฝุ่นจากสภาพอากาศ</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><script defer src="{{ url_for('static', filename='app.js') }}"></script></head>
+<body>
+<header><a class="brand" href="/">◌ AirPredict</a><span class="badge">Machine Learning Mini Project</span></header>
+<main>
+<section class="intro"><p class="eyebrow">WEATHER → AIR QUALITY</p><h1>เข้าใจอากาศ<br>ผ่านข้อมูลและการเรียนรู้</h1><p class="lead">ทดลองประมาณปริมาณฝุ่น PM2.5 จากสภาพอากาศเฉลี่ยรายวัน<br class="desktop"> ด้วยโมเดล Linear Regression ของพื้นที่โรงพยาบาลจุฬาลงกรณ์ กรุงเทพฯ</p></section>
+<div class="workspace">
+<section class="card inputs"><div class="section-label"><span>01 / ข้อมูลสภาพอากาศ</span><span class="dot"></span></div><h2>วันนี้อากาศเป็นอย่างไร</h2><p class="muted">กรอกค่าเฉลี่ยรายวันทั้ง 3 ตัวแปรเพื่อทดลองโมเดล</p>
+<form id="predict-form">
+<label for="temperature">อุณหภูมิ <span>°C</span></label><input id="temperature" name="temperature_c" type="number" min="-10" max="60" step="any" value="30" required><small>อุณหภูมิอากาศเฉลี่ยที่ความสูง 2 เมตร</small>
+<label for="humidity">ความชื้นสัมพัทธ์ <span>%</span></label><input id="humidity" name="humidity_percent" type="number" min="0" max="100" step="any" value="70" required><small>ความชื้นเฉลี่ยรายวัน ตั้งแต่ 0–100%</small>
+<label for="wind">ความเร็วลม <span>m/s</span></label><input id="wind" name="wind_speed_ms" type="number" min="0" max="60" step="any" value="2" required><small>ความเร็วลมเฉลี่ยที่ความสูง 10 เมตร</small>
+<button type="submit" id="predict-button" {% if not report %}disabled{% endif %}>ประมาณค่า PM2.5 <span>↗</span></button><p id="form-error" class="error" role="alert"></p>
+</form></section>
+<section class="card result" aria-live="polite"><div class="section-label"><span>02 / ผลจากโมเดล</span><span>LINEAR REGRESSION</span></div><div class="result-center"><p id="result-label">ค่าฝุ่น PM2.5 ที่ประมาณได้</p><div class="value" id="prediction">—</div><p class="unit">ไมโครกรัมต่อลูกบาศก์เมตร · µg/m³</p><p id="result-hint" class="muted">กรอกข้อมูลแล้วกดปุ่มเพื่อดูผลประมาณ</p></div><div id="warnings" class="warning" hidden></div><div class="note"><b>ผลประมาณเพื่อการศึกษา</b><p>ใช้ข้อมูลย้อนหลังและสภาพอากาศเฉลี่ยรายวัน ไม่ใช่ค่าฝุ่นที่ตรวจวัดจริงหรือพยากรณ์แบบเรียลไทม์</p></div></section>
+</div>
+{% if report %}
+<section class="evaluation"><div class="evaluation-heading"><div><p class="eyebrow">BEHIND THE PREDICTION</p><h2>โมเดลทำได้ดีแค่ไหน</h2></div><p class="muted">ทดสอบด้วยข้อมูลที่ไม่ได้ใช้ฝึก<br>{{ report.test.start }} ถึง {{ report.test.end }}</p></div>
+<div class="metrics"><article><span>MAE · ความคลาดเคลื่อนเฉลี่ย</span><strong>{{ '%.2f'|format(report.metrics.mae) }} <small>µg/m³</small></strong></article><article><span>RMSE</span><strong>{{ '%.2f'|format(report.metrics.rmse) }} <small>µg/m³</small></strong></article><article><span>R² · ความสามารถอธิบายข้อมูล</span><strong>{{ '%.3f'|format(report.metrics.r2) }}</strong></article><article><span>ข้อมูลฝึก / ทดสอบ</span><strong>{{ report.train.rows }} <small>/ {{ report.test.rows }} วัน</small></strong></article></div>
+<div class="card graph"><img src="/evaluation.png" alt="กราฟค่าฝุ่นจริงเทียบค่าที่โมเดลประมาณบนชุดทดสอบ"><p class="muted">แบ่งข้อมูลตามเวลา 80/20 โดยไม่สุ่ม • MAE ของวิธีใช้ค่าเฉลี่ยชุดฝึก: {{ '%.2f'|format(report.baseline.mae) }} µg/m³</p>{% if report.metrics.mae >= report.baseline.mae %}<p class="warning">โมเดลยังมี MAE สูงกว่าหรือเท่ากับวิธีใช้ค่าเฉลี่ยชุดฝึก จึงยังไม่แสดงว่าดีกว่าวิธีพื้นฐานตามเกณฑ์นี้</p>{% endif %}</div>
+<details class="card"><summary>ข้อมูลที่ใช้และข้อจำกัด</summary><p>ข้อมูล PM2.5 จาก OpenAQ และอากาศจาก NASA POWER ปี 2024–2025 รวม {{ report.rows }} วัน จับคู่ช่วงเวลาเดียวกันและกรองคุณภาพก่อนฝึก ข้อมูลอากาศเป็นค่าจากกริด บางเดือนมีค่าฝุ่นขาดมาก ทำให้ตัวอย่างไม่ครอบคลุมทุกฤดูกาลเท่ากัน</p><p>ช่วงตัวแปรในชุดฝึก: {% for field, range in report.training_ranges.items() %}{{ field }} {{ '%.2f'|format(range.min) }}–{{ '%.2f'|format(range.max) }}{% if not loop.last %} · {% endif %}{% endfor %}</p></details>
+</section>
+{% else %}<p class="warning">ยังไม่มีโมเดล กรุณารัน scripts/train_model.py ก่อนเริ่มทดลอง</p>{% endif %}
+<footer><span>AirPredict / โครงงาน Machine Learning</span><span>OpenAQ + NASA POWER · Flask + Scikit-learn</span></footer>
+</main></body></html>

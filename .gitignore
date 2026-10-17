@@ -16,3 +16,9 @@ __pycache__/
 # Local OS files
 .DS_Store
 Thumbs.db
+
+# Generated data and local artifacts
+data/
+models/
+reports/
+.mplconfig/
