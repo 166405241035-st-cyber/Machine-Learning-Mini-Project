@@ -102,3 +102,11 @@ py -3.12 -m venv .venv
 - .venv/ ปรากฏเป็น untracked จึงยังไม่ได้ถูกติดตามใน working tree ตามผลที่ส่งมา
 - เพิ่ม .gitignore บน GitHub แล้ว ขั้นต่อไปให้ git pull และ git status อีกครั้ง .venv/ ควรไม่ปรากฏใน untracked
 - ยังไม่ได้บันทึกรุ่นแพ็กเกจจริงลง requirements.txt
+
+## เริ่มขั้นค้นหาข้อมูลจริง
+- ตรวจ GitHub พบ requirements.txt แล้ว
+- เพิ่ม .env.example และ scripts/find_stations.py ใช้ OpenAQ API v3 พร้อม pagination, timeout และไม่แสดง key
+- ค้นกรอบพิกัดกรุงเทพฯ และบริเวณใกล้เคียง ต้องตรวจว่าอยู่กรุงเทพฯ จริงก่อนเลือก
+- ผลเขียน data/station_candidates.csv มี station/sensor IDs พิกัด และช่วงวันที่ระดับสถานี ซึ่งยังไม่รับรองความครบของ PM2.5 ระดับ sensor
+- ยังไม่ได้รัน API จริง เนื่องจาก key อยู่ในเครื่องผู้ใช้
+- ขั้นต่อไป: git pull, ตั้ง .env เฉพาะเครื่อง, รันสคริปต์ และตรวจรายชื่อสถานี
