@@ -28,12 +28,13 @@ def main():
     out = ROOT / 'docs/analysis'
     figs = out / 'figures'
     figs.mkdir(parents=True, exist_ok=True)
-    plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10, 'axes.spines.top': False,
+    plt.rcParams.update({'svg.hashsalt': 'airpredict-analysis-v1',
+                         'font.family': 'DejaVu Sans', 'font.size': 10, 'axes.spines.top': False,
                          'axes.spines.right': False, 'figure.facecolor': 'white'})
 
     def save(fig, name):
         fig.savefig(figs / f'{name}.png', dpi=180, bbox_inches='tight')
-        fig.savefig(figs / f'{name}.svg', bbox_inches='tight')
+        fig.savefig(figs / f'{name}.svg', bbox_inches='tight', metadata={'Date': None})
         plt.close(fig)
 
     # Primary explanatory analysis uses training data only.

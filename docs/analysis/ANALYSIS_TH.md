@@ -88,4 +88,3 @@ W = ความเร็วลมเฉลี่ยรายวันที่ 
 - [OpenAQ](https://docs.openaq.org/) — location 5545, sensor 1304222
 - [NASA POWER Hourly API](https://power.larc.nasa.gov/docs/services/api/temporal/hourly/) — UTC, T2M/RH2M/WS10M
 - โค้ดและขั้นตอน: scripts/check_coverage.py, prepare_dataset.py, train_model.py และ analyze_results.py ใน repository
-

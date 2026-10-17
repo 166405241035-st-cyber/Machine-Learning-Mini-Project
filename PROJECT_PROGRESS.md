@@ -1,5 +1,17 @@
 # AirPredict — บันทึกแผนและความคืบหน้า
 
+## ล่าสุด ตรวจจากโฟลเดอร์ใหม่สำเร็จ
+- Clone โค้ดลง C:/Users/dY470g3/Downloads/minipro/AirPredict-verification สร้าง .venv ใหม่ Python 3.12.14 และติดตั้ง requirements ทั้งหมดใหม่สำเร็จ
+- ดาวน์โหลดข้อมูลจริงใหม่ทุกขั้น ไม่คัดลอก dataset/model: ได้ 490 วัน ฝึก 392 ทดสอบ 98, MAE 5.14454 RMSE 6.19505 R² 0.52936 ตรงผลเดิม
+- แก้ find_stations.py ให้ stdout UTF-8 รองรับชื่ออีโมจิบน Windows cp874 พร้อม regression test
+- แก้ SVG ให้ deterministic และยืนยันกราฟ 6 รูปสร้างซ้ำตรงกันทุกไบต์
+- เพิ่ม analyze_results.py ใน README workflow, ปิด file response ใน tests และ ignore PNG exports
+- ทดสอบหลังแก้ผ่าน 10 กรณี พร้อม ResourceWarning เป็น error
+- เว็บจาก checkout ใหม่ที่พอร์ต 5002: หน้าหลัก/analysis และกราฟ 6 รูป HTTP 200, POST ตัวอย่างได้ 32.30; เปิด browser หน้าหลักสำเร็จ
+- รายงานตรวจละเอียด docs/VERIFICATION.md ระบุข้อจำกัด runtime และการแก้ Git Schannel ด้วย OpenSSL เฉพาะคำสั่ง
+- ใช้ AirPredict-verification เป็น checkout ที่ผ่านการตรวจและซิงก์กับ GitHub สำหรับทำงานต่อ; ไม่ลบหรือรีเซ็ตโฟลเดอร์เดิม
+- งานต่อ: จัดรายงาน/สไลด์ตาม DOC และซ้อมอธิบายแนวคิด โค้ด และข้อจำกัด
+
 อัปเดต: 17 ตุลาคม 2026 (Asia/Bangkok)
 
 ## วิธีใช้บันทึก

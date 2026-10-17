@@ -11,6 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    # Windows redirected output may default to cp874, which cannot encode station emoji.
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     load_dotenv(ROOT / ".env")
     key = os.getenv("OPENAQ_API_KEY", "").strip()
     if not key or key == "your_key_here":

@@ -37,7 +37,8 @@ class PredictionTests(TestCase):
 
     def test_pages(self):
         for url in ('/', '/static/style.css', '/static/app.js', '/evaluation.png'):
-            self.assertEqual(self.client.get(url).status_code, 200)
+            with self.client.get(url) as response:
+                self.assertEqual(response.status_code, 200)
 
     def test_analysis_page_and_figures(self):
         response = self.client.get('/analysis')
@@ -48,9 +49,9 @@ class PredictionTests(TestCase):
         for name in ANALYSIS_FIGURES:
             url = f'/analysis/figures/{name}.svg'
             self.assertIn(url, html)
-            image = self.client.get(url)
-            self.assertEqual(image.status_code, 200)
-            self.assertIn('image/svg+xml', image.content_type)
+            with self.client.get(url) as image:
+                self.assertEqual(image.status_code, 200)
+                self.assertIn('image/svg+xml', image.content_type)
 
     def test_unknown_analysis_figure(self):
         self.assertEqual(self.client.get('/analysis/figures/secrets.svg').status_code, 404)

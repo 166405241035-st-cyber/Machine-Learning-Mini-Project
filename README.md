@@ -27,6 +27,7 @@ Copy-Item .env.example .env
 .\.venv\Scripts\python.exe scripts\check_coverage.py
 .\.venv\Scripts\python.exe scripts\prepare_dataset.py
 .\.venv\Scripts\python.exe scripts\train_model.py
+.\.venv\Scripts\python.exe scripts\analyze_results.py
 .\.venv\Scripts\python.exe app.py
 ```
 
@@ -65,6 +66,8 @@ API key และ .venv ไม่ถูก commit ห้ามนำ key ไป�
 เว็บเตือนเมื่อกรอกค่านอกช่วงชุดฝึก หาก Linear Regression ให้ค่าติดลบจะแสดงว่าผลไม่สมเหตุสมผลแทนการปรับเป็นศูนย์เงียบ ๆ MAE เป็นค่าความผิดพลาดเฉลี่ยของชุดทดสอบ ไม่ใช่ช่วงรับประกันผลรายครั้ง
 
 ## ทดสอบ
+
+ผลตรวจจาก clean checkout และรายการปัญหาที่แก้ไขอยู่ใน [บันทึกการตรวจความพร้อม](docs/VERIFICATION.md)
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v

@@ -22,3 +22,6 @@ data/
 models/
 reports/
 .mplconfig/
+
+# PNG analysis exports are regenerated locally; SVG figures are versioned.
+docs/analysis/figures/*.png
