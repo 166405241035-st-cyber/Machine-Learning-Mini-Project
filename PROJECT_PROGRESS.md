@@ -116,3 +116,10 @@ py -3.12 -m venv .venv
 - จำนวน 267 เป็นจำนวน sensor ไม่ใช่จำนวนสถานีไม่ซ้ำ บางสถานีมีหลาย sensor
 - ผู้ใช้เคยพิมพ์ OPENAQ_API_KEY=your_key_here ลง PowerShell จึงเกิด CommandNotFoundException บรรทัดนี้ต้องอยู่ใน .env แต่การรันสคริปต์ภายหลังสำเร็จ แสดงว่ามี key ใช้งานได้ใน environment หรือ .env โดยไม่ต้องเปิดเผยค่า
 - ยังไม่ได้เลือกสถานีหรือยืนยันช่วงข้อมูล ต้องอ่าน CSV และตรวจ sensor-level coverage ต่อ
+
+## การเข้าถึงไฟล์ในเครื่อง
+- ผู้ใช้อนุญาตให้อ่านข้อมูลโครงการในเครื่องโดยตรง แทนให้แนบ CSV ซ้ำ
+- อ่าน data/station_candidates.csv จาก C:/Users/dY470g3/Downloads/minipro/Machine-Learning-Mini-Project สำเร็จ ยืนยัน 267 แถว
+- ตัวเลือกตรวจต่อ: Chulalongkorn Hospital location 5545, sensor 1304222, พิกัด 13.729852,100.536501 หน่วย µg/m³
+- CSV ระบุช่วงสถานี 2016-08-18 ถึง 2026-10-17 แต่เป็น metadata ระดับ location ยังไม่ยืนยันความครบของ sensor หรือข้อมูลรายวัน
+- ยังไม่เลือกสถานีถาวร ต้องตรวจ coverage จริงก่อน เสนอพิจารณาช่วงปีเต็ม 2024–2025 ถ้าข้อมูลเพียงพอ
