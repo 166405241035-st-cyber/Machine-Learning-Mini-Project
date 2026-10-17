@@ -1,5 +1,6 @@
 """Download and assess a candidate sensor; do not assume station dates are coverage."""
 import calendar
+import argparse
 import csv
 from datetime import date
 import json
@@ -16,6 +17,10 @@ SENSOR = 1304222
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--sensor', type=int, default=SENSOR)
+    parser.add_argument('--location', type=int, default=5545)
+    args = parser.parse_args()
     load_dotenv(ROOT / '.env')
     key = os.getenv('OPENAQ_API_KEY', '').strip()
     if not key or key == 'your_key_here':
@@ -23,12 +28,12 @@ def main():
         return 1
     records = []
     raw = []
-    output = ROOT / 'data' / 'coverage'
+    output = ROOT / 'data' / 'coverage' / str(args.sensor)
     output.mkdir(parents=True, exist_ok=True)
     try:
         for year in (2024, 2025):
             response = requests.get(
-                f'https://api.openaq.org/v3/sensors/{SENSOR}/days',
+                f'https://api.openaq.org/v3/sensors/{args.sensor}/days',
                 headers={'X-API-Key': key},
                 params={'date_from': f'{year}-01-01', 'date_to': f'{year}-12-31',
                         'limit': 1000, 'page': 1}, timeout=60)
@@ -59,7 +64,9 @@ def main():
                           and flagged is False)
                 records.append({'date': day.isoformat(), 'pm25': value,
                                 'coverage_percent': coverage, 'has_flags': flagged,
-                                'usable': usable})
+                                'usable': usable,
+                                'period_start_utc': period['datetimeFrom']['utc'],
+                                'period_end_utc': period['datetimeTo']['utc']})
     except (requests.RequestException, ValueError, KeyError, TypeError):
         print('Request or response validation failed; no complete report produced.')
         return 1
@@ -69,19 +76,23 @@ def main():
     (output / 'chula_daily_raw.json').write_text(
         json.dumps(raw, ensure_ascii=False, indent=2), encoding='utf-8')
     with (output / 'chula_daily.csv').open('w', newline='', encoding='utf-8-sig') as f:
-        writer = csv.DictWriter(f, fieldnames=['date', 'pm25', 'coverage_percent', 'has_flags', 'usable'])
+        writer = csv.DictWriter(f, fieldnames=['date', 'pm25', 'coverage_percent', 'has_flags', 'usable', 'period_start_utc', 'period_end_utc'])
         writer.writeheader()
         writer.writerows(sorted(records, key=lambda r: r['date']))
-    report = {'sensor_id': SENSOR, 'location_id': 5545,
+    report = {'sensor_id': args.sensor, 'location_id': args.location,
               'selection_rule': 'finite nonnegative PM2.5; coverage >=75%; hasFlags=false',
               'note': 'Daily periods use OpenAQ local period start. Weather alignment still requires review.',
-              'years': {}}
+              'years': {}, 'months': {}}
     for year in (2024, 2025):
         rows = [r for r in records if r['date'].startswith(str(year))]
         usable = sum(r['usable'] for r in rows)
         expected = 366 if calendar.isleap(year) else 365
         report['years'][str(year)] = {'expected_days': expected, 'returned_days': len(rows),
                                       'usable_days': usable, 'usable_percent': round(100 * usable / expected, 2)}
+        for month in range(1, 13):
+            prefix = f'{year}-{month:02d}'
+            monthly = [r for r in rows if r['date'].startswith(prefix)]
+            report['months'][prefix] = {'returned': len(monthly), 'usable': sum(r['usable'] for r in monthly), 'expected': calendar.monthrange(year, month)[1]}
     (output / 'coverage_report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     print(json.dumps(report, indent=2))
     return 0
